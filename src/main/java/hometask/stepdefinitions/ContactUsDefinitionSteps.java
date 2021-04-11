@@ -10,8 +10,8 @@ public class ContactUsDefinitionSteps {
     private ContactUsPage contactUsPage;
 
     @And("Anonymous user sees the JUST ASK US ANYTHING form on Contact Us Page")
-    public void userSeesJustAskUsAnythingFormOnContactUsPage() throws Exception {
-        throw new Exception("some exception");
+    public void userSeesJustAskUsAnythingFormOnContactUsPage(){
+        contactUsPage.engineeringSliderShouldBePresentOnMainPage();
     }
 
 }

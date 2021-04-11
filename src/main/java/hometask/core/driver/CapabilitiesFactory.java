@@ -37,6 +37,7 @@ public class CapabilitiesFactory implements ICapabilitiesFactory {
         chromeOptions.addArguments(Arrays.asList("--allow-running-insecure-content", "--ignore-certificate-errors",
                 "--disable-popup-blocking", "--disable-dev-shm-usage", "--no-sandbox", "--disable-gpu"));
         capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+        capabilities.setCapability("enableVideo", true);
         return capabilities;
     }
 
@@ -46,6 +47,7 @@ public class CapabilitiesFactory implements ICapabilitiesFactory {
         capabilities.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
         capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", true);
         capabilities.setCapability(FirefoxDriver.PROFILE, profile);
         return capabilities;
     }
