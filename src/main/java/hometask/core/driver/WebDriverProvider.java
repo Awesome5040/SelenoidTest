@@ -26,8 +26,8 @@ import static io.vavr.API.Match;
 @Component
 public class WebDriverProvider implements IWebDriverProvider {
 
-    @Value("${selenideUrl}")
-    private String selenideUrl;
+    @Value("${selenoidUrl}")
+    private String selenoidUrl;
 
     @Value("${browser.type}")
     private String browserType;
@@ -43,7 +43,7 @@ public class WebDriverProvider implements IWebDriverProvider {
         return Match(browserType).of(
         Case($("local"), this::getLocalDriverByBrowserName),
         Case($("remote"), () -> Try.of(
-                        () -> new RemoteWebDriver(new URL(selenideUrl), iCapabilitiesFactory.getCapabilities(appConfig.getBrowserName())))
+                        () -> new RemoteWebDriver(new URL(selenoidUrl), iCapabilitiesFactory.getCapabilities(appConfig.getBrowserName())))
                         .getOrElseThrow(exception -> new TAFRuntimeException("Unable to create remote web driver", exception)))
         );
     }
