@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.4.0'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+}
+
+wrapper {
+    gradleVersion = '5.6.2'
+}
+
+group 'SelenoidTest'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+ext {
+    cucumberVersion = '4.7.2'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4'
+    compile group: 'io.cucumber', name: 'cucumber-spring', version: '2.1.0'
+    compile group: 'com.codeborne', name: 'selenide', version: '5.13.0'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+    compile group: 'io.cucumber', name: 'cucumber-core', version: "${cucumberVersion}"
+    compile group: 'io.cucumber', name: 'cucumber-java', version: "${cucumberVersion}"
+    compile group: 'io.cucumber', name: 'cucumber-java8', version: "${cucumberVersion}"
+    compile group: 'io.cucumber', name: 'cucumber-junit', version: "${cucumberVersion}"
+    compile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '+'
+    compile group: 'io.qameta.allure', name: 'allure-cucumber4-jvm', version: '+'
+    compile group: 'io.qameta.allure', name: 'allure-selenide', version: '+'
+    compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
+}
+
+def cucumberOptions = ['--plugin', 'pretty',
+                       '--plugin', 'io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm',
+                       '-g', 'hometask/stepdefinitions', 'src/main/resources/features',
+                       '-p', 'rerun:failed_scenarios.txt',
+                       '--tags', System.properties['tags'],
+                       '--threads', System.properties['threads']]
+
+def cucumberRerunOptions = ['--plugin', 'pretty',
+                            '--plugin', 'io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm',
+                            '-g', 'hometask/stepdefinitions', '@failed_scenarios.txt']
+
+task cucumber() {
+    dependsOn testClasses
+    doLast {
+        javaexec {
+            systemProperty "spring.profiles.active", System.properties['spring.profiles.active']
+            systemProperty "browser.type", System.properties['browser.type']
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = cucumberOptions
+        }
+    }
+}
+
+task cucumberRerunFailed() {
+    dependsOn testClasses
+    doLast {
+        javaexec {
+            systemProperty "spring.profiles.active", System.properties['spring.profiles.active']
+            systemProperty "browser.type", System.properties['browser.type']
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = cucumberRerunOptions
+        }
+    }
+}
+
+
+task removeAllureResults(type: Delete) {
+    delete 'allure-results', 'uglyFile'
+    followSymlinks = true
+}
+test.ignoreFailures = true
+
+cucumber.dependsOn removeAllureResults
