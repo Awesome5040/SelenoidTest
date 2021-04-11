@@ -63,7 +63,7 @@ def cucumberRerunOptions = ['--plugin', 'pretty',
                             '-g', 'hometask/stepdefinitions', '@failed_scenarios.txt']
 
 task cucumber() {
-    dependsOn testClasses
+    dependsOn build
     doLast {
         javaexec {
             systemProperty "spring.profiles.active", System.properties['spring.profiles.active']
@@ -76,7 +76,7 @@ task cucumber() {
 }
 
 task cucumberRerunFailed() {
-    dependsOn testClasses
+    dependsOn build
     doLast {
         javaexec {
             systemProperty "spring.profiles.active", System.properties['spring.profiles.active']
