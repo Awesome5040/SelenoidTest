@@ -49,7 +49,7 @@ dependencies {
     compile group: 'io.qameta.allure', name: 'allure-cucumber4-jvm', version: '+'
     compile group: 'io.qameta.allure', name: 'allure-selenide', version: '+'
     compile group: 'io.vavr', name: 'vavr', version: '0.10.3'
-    runtime files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
 }
 
 def cucumberOptions = ['--plugin', 'pretty',
