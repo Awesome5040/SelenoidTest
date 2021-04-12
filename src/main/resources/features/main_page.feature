@@ -10,6 +10,5 @@ Feature: Main Page
     Examples:
       | browserName |
       | chrome      |
-      | firefox     |
 
 
